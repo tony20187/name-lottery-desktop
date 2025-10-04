@@ -2,101 +2,126 @@
   --amber:#f59e0b; --amber-100:#fef3c7; --bg:#fff8ea; --ink:#1f2937;
   --border:#e5e7eb; --shadow:0 10px 30px rgba(0,0,0,.08);
 }
-*{box-sizing:border-box}
-html,body{height:100%}
+
+/* ========= Base ========= */
+*{ box-sizing:border-box }
+html,body{ height:100% }
 body{
-  margin:0;background:linear-gradient(var(--bg),#fff);color:var(--ink);
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Noto Sans TC,Arial,sans-serif
+  margin:0;
+  background:linear-gradient(var(--bg),#fff);
+  color:var(--ink);
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Noto Sans TC,Arial,sans-serif;
 }
-.wrap{max-width:1180px;margin:auto;padding:20px 18px 40px}
-.header{display:flex;align-items:flex-end;gap:12px;justify-content:space-between;flex-wrap:nowrap}
-.app-title{margin:0;font-size:45px;white-space:nowrap}
-.version{opacity:1;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wrap{ max-width:1180px; margin:auto; padding:20px 18px 40px }
 
-.view.hidden{display:none}
-.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:14px;box-shadow:var(--shadow)}
-.label{font-size:20px;opacity:1}
+/* ========= Header（單行顯示 + 可縮放） ========= */
+.header{
+  display:flex; align-items:flex-end; gap:12px;
+  justify-content:space-between; flex-wrap:nowrap;
+}
+.app-title{ margin:0; font-size:45px; white-space:nowrap }
+.version{ opacity:1; font-size:15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+
+/* RWD：小螢幕字體自動縮 70% */
+@media (max-width: 900px){
+  .app-title{ font-size:31.5px }
+  .version{ font-size:10.5px }
+}
+
+/* ========= Cards / Controls ========= */
+.view.hidden{ display:none }
+.card{ background:#fff; border:1px solid var(--border); border-radius:16px; padding:14px; box-shadow:var(--shadow) }
+.label{ font-size:20px; opacity:1 }
 textarea{
-  width:100%;height:140px;margin-top:6px;border:1px solid var(--border);
-  border-radius:12px;padding:10px;resize:vertical;overflow:hidden;
+  width:100%; height:140px; margin-top:6px;
+  border:1px solid var(--border); border-radius:12px; padding:10px;
+  resize:vertical; overflow:hidden;   /* 不顯示卷軸，由 JS 自動撐高 */
 }
-.ck{display:flex;align-items:center;gap:8px;font-size:14px;margin:6px 0}
-.range{display:flex;align-items:center;gap:8px;margin-top:8px}
-.actions{display:flex;gap:10px;margin-top:12px}
-.btn{border:1px solid var(--border);background:#f9fafb;border-radius:10px;padding:8px 12px;cursor:pointer}
-.btn.primary{background:var(--amber);color:#fff;border-color:#eab308}
-.btn:disabled{opacity:.5;cursor:not-allowed}
-.btn.small{padding:6px 10px;font-size:12px}
-.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
-.list{margin:0;padding-left:20px;min-height:24px}
-.error{margin-top:10px;color:#b91c1c;background:#fee2e2;border:1px solid #fecaca;padding:8px;border-radius:10px}
+.ck{ display:flex; align-items:center; gap:8px; font-size:14px; margin:6px 0 }
+.range{ display:flex; align-items:center; gap:8px; margin-top:8px }
+.actions{ display:flex; gap:10px; margin-top:12px }
+.btn{ border:1px solid var(--border); background:#f9fafb; border-radius:10px; padding:8px 12px; cursor:pointer }
+.btn.primary{ background:var(--amber); color:#fff; border-color:#eab308 }
+.btn:disabled{ opacity:.5; cursor:not-allowed }
+.btn.small{ padding:6px 10px; font-size:12px }
+.card-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:6px }
+.list{ margin:0; padding-left:20px; min-height:24px }
+.error{ margin-top:10px; color:#b91c1c; background:#fee2e2; border:1px solid #fecaca; padding:8px; border-radius:10px }
 
-/* 分組 UI */
-.group{border:1px dashed var(--border);border-radius:12px;padding:10px;margin:10px 0;background:#fff}
-.group__head{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
-.group__body{display:none;margin-top:8px}
-.group.open .group__body{display:block}
+/* ========= 分組 UI ========= */
+.group{ border:1px dashed var(--border); border-radius:12px; padding:10px; margin:10px 0; background:#fff }
+.group__head{ display:flex; align-items:center; gap:10px; cursor:pointer; user-select:none }
+.group__body{ display:none; margin-top:8px }
+.group.open .group__body{ display:block }
 
-/* === 舞台 === */
+/* ========= 舞台（RWD 自適應高度，不溢出） ========= */
 .stage{
-  position:relative;border:1px solid var(--border);border-radius:18px;background:#fff;
-  overflow:hidden;box-shadow:inset 0 2px 20px rgba(0,0,0,.04);
-  height:60vh; min-height:420px; /* RWD：視窗高的 60% */
+  position:relative;
+  border:1px solid var(--border); border-radius:18px; background:#fff;
+  overflow:hidden; box-shadow:inset 0 2px 20px rgba(0,0,0,.04);
+  height:clamp(420px, 60vh, 78vh);      /* ⬅ 依視窗高度縮放 */
 }
-.stage.running{box-shadow:inset 0 2px 20px rgba(0,0,0,.08), 0 0 0 4px rgba(245,158,11,.15);}
-.fx-canvas{position:absolute;inset:0;pointer-events:none}
+.stage.running{ box-shadow:inset 0 2px 20px rgba(0,0,0,.08), 0 0 0 4px rgba(245,158,11,.15) }
+.fx-canvas{ position:absolute; inset:0; pointer-events:none }
 
 /* 進度條 */
-.progress{height:6px;background:#f3f4f6;border-radius:999px;overflow:hidden;margin:10px 0}
-.progress__bar{height:100%;width:0%;background:linear-gradient(90deg,#fde68a,#f59e0b);transition:width .2s linear}
+.progress{ height:6px; background:#f3f4f6; border-radius:999px; overflow:hidden; margin:10px 0 }
+.progress__bar{ height:100%; width:0%; background:linear-gradient(90deg,#fde68a,#f59e0b); transition:width .2s linear }
 
 /* 預覽名單 */
-#previewList{margin-top:6px}
-#previewList span { font-size: 1.2rem; line-height: 1.8; }
+#previewList{ margin-top:6px }
+#previewList span{ font-size:1.2rem; line-height:1.8 }
 
-/* 結果遮罩 */
+/* ========= Overlay / Modal ========= */
 .overlay{
   position:fixed; inset:0; z-index:9999; display:none; place-items:center;
   background:rgba(255,255,255,.55); backdrop-filter:blur(2px);
 }
-.overlay.show{ display:grid; }
+.overlay.show{ display:grid }
 
-/* modal */
+/* 中獎外框（桌機固定寬 + RWD） */
 .modal{
-  position:relative;
-  background:#fff;padding:24px 28px;border-radius:18px;box-shadow:var(--shadow);
-  text-align:center;border:1px solid var(--border);max-width:80vw; overflow:visible;
+  position:relative; background:#fff; padding:24px 28px; border-radius:18px;
+  box-shadow:var(--shadow); text-align:center; border:1px solid var(--border);
+  width:700px; max-width:90vw; overflow:visible; margin:auto;
 }
-.subtle{ font-size:45px; opacity:.6; margin-bottom:6px; color:#ef4444; }
-.winner{ font-size:200px; font-weight:800; letter-spacing:.02em; line-height:1.1; max-height:none; overflow:visible; }
+.subtle{ font-size:45px; opacity:.6; margin-bottom:6px; color:#ef4444 }
+
+/* 中獎者名稱：clamp 讓名字在各裝置都不溢出 */
+.winner{
+  font-weight:800; letter-spacing:.02em; line-height:1.1;
+  max-height:none; overflow:visible;
+  font-size:clamp(48px, 14vw, 200px);
+}
 .hint{ font-size:12px; opacity:.6; margin-top:8px }
 
 /* 煙花在底、modal 在上 */
-.overlay .modal { z-index: 5; }
-#fireworksCanvas { z-index: 0 !important; }
+.overlay .modal{ z-index:5 }
+#fireworksCanvas{ z-index:0 !important }
 
-/* 不要卷軸 */
-#winnerName{ display:flex; flex-direction:column; align-items:center; gap:.22em; max-height:none; overflow:visible; }
+/* 中獎名單容器：不使用卷軸 */
+#winnerName{
+  display:flex; flex-direction:column; align-items:center; gap:.22em;
+  max-height:none; overflow:visible;
+}
 
-/* 右側固定圖片 */
+/* ========= 右側固定圖片 ========= */
 .winner-img{
   position:absolute;
-  right:-40vw;
-  top:50%;
-  transform:translateY(-50%);
-  width:min(40vw, 900px);
-  height:auto;
-  pointer-events:none; user-select:none;
+  right: clamp(-40vw, -24vw, -12vw);   /* 依寬度推到右側空白 */
+  top:50%; transform:translateY(-50%);
+  width: clamp(260px, 40vw, 900px);
+  height:auto; pointer-events:none; user-select:none;
   filter: drop-shadow(0 10px 20px rgba(0,0,0,.15));
 }
 
-/* 小螢幕自動靠下 & 標題縮小到 70% */
+/* 手機：圖片改到下方、標題縮小 */
 @media (max-width: 900px){
-  .winner-img{ right:0; top:100%; transform:translateY(20px); width:160px; }
-  .app-title{ font-size: 31.5px; }     /* 45px * 0.7 */
-  .version{ font-size: 10.5px; }       /* 15px * 0.7 */
+  .winner-img{ right:0; top:100%; transform:translateY(20px); width:160px }
+  .modal{ width:90vw; padding:18px }
+  .subtle{ font-size:28px }
 }
 
-/* 舞台放大版（可用 class 控制） */
-.stage-xl{ height: 65vh; min-height: 600px; max-height: 900px; }
-.stage-xxl{ height: 80vh; min-height: 700px; max-height: 1000px; }
+/* ========= 舞台尺寸 Preset（可選） ========= */
+.stage-xl{ height:65vh; min-height:600px; max-height:900px }
+.stage-xxl{ height:80vh; min-height:700px; max-height:1000px }
