@@ -1,6 +1,6 @@
-// renderer.js（分組穩定高效版）
-// ✅ 分組收合：只會抽到「有勾選」的組別
-// ✅ 洗球一定看得到：先量後定位 + translate3d + 邊界反彈
+// renderer.js（分組穩定高效版 — 位置用 left/top，避免白屏與溢出）
+// ✅ 只抽「有勾選」的組別
+// ✅ 洗球：先量後定位 + left/top 更新 + 邊界反彈（不會白屏也不會溢出）
 // ✅ 空白鍵抽獎（設定/預覽/得獎畫面可再次抽）
 // ✅ 一次最多抽 5 人；字體依人數自動縮放
 // ✅ 煙花在 overlay 背後；關閉即停音
@@ -59,7 +59,7 @@ const MAX_V = 1.5;
 
 let dots = []; // { el, x, y, vx, vy, w, h }
 
-// ====== 分組設定 ======
+// ====== 分組設定（若沒有這些節點，會自動退回單一輸入框 #inputNames）======
 const groups = [
   { toggle: '#g1', box: '#g1Names' },
   { toggle: '#g2', box: '#g2Names' },
@@ -77,26 +77,33 @@ function initGroupToggles() {
     update();
   });
 }
-document.addEventListener('DOMContentLoaded', () => {
-  initGroupToggles();
+document.addEventListener('DOMContentLoaded', initGroupToggles);
 
-  // 自動高度調整 textarea（無卷軸）
-  document.querySelectorAll("textarea").forEach((ta) => {
-    const autoGrow = () => {
-      ta.style.height = "auto";
-      ta.style.height = ta.scrollHeight + "px";
-    };
-    ta.addEventListener("input", autoGrow);
-    autoGrow();
-  });
-});
+// ✅ 名字輸入框（單欄版本）自動撐高（若存在）
+(function initAutoGrow(){
+  const ta = document.querySelector("#inputNames");
+  if (!ta) return;
+  const autoGrow = () => {
+    ta.style.height = "auto";
+    ta.style.height = ta.scrollHeight + "px";
+  };
+  ta.addEventListener("input", autoGrow);
+  requestAnimationFrame(autoGrow);
+})();
 
-// 取得「有勾選」的所有組別名單
+// 取得「有勾選」的所有組別名單（若頁面只有 #inputNames，仍支援）
 function getAvailableNames() {
-  const rawText = groups
-    .filter(g => document.querySelector(g.toggle)?.checked)
-    .map(g => document.querySelector(g.box)?.value || '')
-    .join('\n');
+  const hasGroups = groups.some(g => document.querySelector(g.box));
+  let rawText = "";
+
+  if (hasGroups) {
+    rawText = groups
+      .filter(g => document.querySelector(g.toggle)?.checked)
+      .map(g => document.querySelector(g.box)?.value || '')
+      .join('\n');
+  } else {
+    rawText = (document.querySelector("#inputNames")?.value || "");
+  }
 
   let names = rawText.split(/[\n,，]+/).map(s => s.trim()).filter(Boolean);
   if (excludeWinners?.checked) names = names.filter(n => !winners.includes(n));
@@ -113,10 +120,16 @@ chkMulti?.addEventListener("change", () => {
 });
 
 btnClear?.addEventListener("click", () => {
-  groups.forEach(g => {
-    const box = document.querySelector(g.box);
-    if (box) box.value = "";
-  });
+  const hasGroups = groups.some(g => document.querySelector(g.box));
+  if (hasGroups) {
+    groups.forEach(g => {
+      const box = document.querySelector(g.box);
+      if (box) box.value = "";
+    });
+  } else {
+    const ta = document.querySelector("#inputNames");
+    if (ta) { ta.value = ""; ta.dispatchEvent(new Event("input")); }
+  }
 });
 
 btnClearHistory?.addEventListener("click", () => {
@@ -266,7 +279,7 @@ function withReadyStage(cb) {
   requestAnimationFrame(check);
 }
 
-// ====== 洗球 ======
+// ====== 洗球（使用 left/top，最穩定，不會白屏，也不會溢出） ======
 function clearDots() {
   cancelAnimationFrame(rafId);
   dots.forEach(d => d.el.remove());
@@ -286,12 +299,12 @@ function spawnDots(names) {
     const el = document.createElement("span");
     el.textContent = n;
 
+    // 只保留必要樣式；用 left/top 來定位
     Object.assign(el.style, {
       position: "absolute",
       left: "0px",
       top: "0px",
-      transform: "translate3d(-9999px,-9999px,0)", // 先離場量尺寸
-      willChange: "transform",
+      visibility: "hidden",   // 先隱藏量尺寸，避免閃爍
       pointerEvents: "none",
       userSelect: "none",
       zIndex: "1",
@@ -313,13 +326,13 @@ function spawnDots(names) {
 
   stage.appendChild(frag);
 
-  // 量尺寸、定位、速度
+  // 量尺寸、定位、速度（左上角座標）
   dots.forEach((d) => {
     d.w = d.el.offsetWidth || 64;
     d.h = d.el.offsetHeight || 30;
 
-    d.x = clamp(rand(d.w / 2, W - d.w / 2), d.w / 2, W - d.w / 2);
-    d.y = clamp(rand(d.h / 2, H - d.h / 2), d.h / 2, H - d.h / 2);
+    d.x = clamp(rand(0, W - d.w), 0, W - d.w);
+    d.y = clamp(rand(0, H - d.h), 0, H - d.h);
 
     const rnd = () => {
       let v = rand(MIN_V, MAX_V) * (Math.random() < 0.5 ? -1 : 1);
@@ -329,7 +342,9 @@ function spawnDots(names) {
     d.vx = rnd();
     d.vy = rnd();
 
-    d.el.style.transform = `translate3d(${d.x}px, ${d.y}px, 0)`;
+    d.el.style.left = d.x + "px";
+    d.el.style.top  = d.y + "px";
+    d.el.style.visibility = "visible";
   });
 }
 function animateDots() {
@@ -341,15 +356,15 @@ function animateDots() {
     b.x += b.vx;
     b.y += b.vy;
 
-    const halfW = b.w / 2;
-    const halfH = b.h / 2;
+    // 左上角邊界反彈（不會溢出）
+    if (b.x < 0)        { b.x = 0;        b.vx = -b.vx; }
+    if (b.x > W - b.w)  { b.x = W - b.w;  b.vx = -b.vx; }
+    if (b.y < 0)        { b.y = 0;        b.vy = -b.vy; }
+    if (b.y > H - b.h)  { b.y = H - b.h;  b.vy = -b.vy; }
 
-    if (b.x < halfW)     { b.x = halfW;   b.vx = -b.vx; }
-    if (b.x > W - halfW) { b.x = W - halfW; b.vx = -b.vx; }
-    if (b.y < halfH)     { b.y = halfH;   b.vy = -b.vy; }
-    if (b.y > H - halfH) { b.y = H - halfH; b.vy = -b.vy; }
-
-    b.el.style.transform = `translate3d(${b.x}px, ${b.y}px, 0)`;
+    // 直接用 left/top 更新
+    b.el.style.left = b.x + "px";
+    b.el.style.top  = b.y + "px";
   }
 
   rafId = requestAnimationFrame(animateDots);
@@ -363,7 +378,6 @@ document.addEventListener("visibilitychange", () => {
 
 // ====== 主流程 ======
 function startDraw(names) {
-  // 音效 reset
   safeStop(sfxWash);
   safeStop(sfxWin);
 
@@ -378,7 +392,6 @@ function startDraw(names) {
     rafId = requestAnimationFrame(animateDots);
   });
 
-  // 洗球音（循環）
   if (sfxWash) {
     sfxWash.loop = true;
     sfxWash.volume = 1;
@@ -394,7 +407,7 @@ function startDraw(names) {
     if (countdown <= 0) {
       clearInterval(tmr);
       cancelAnimationFrame(rafId);
-      prePlayWinMusic(); // 先播，避免延遲
+      prePlayWinMusic();
       finishDraw(names);
     }
   }, 1000);
@@ -403,7 +416,6 @@ function startDraw(names) {
 function finishDraw(names) {
   safeStop(sfxWash);
 
-  // 最多 5 人
   let k = 1;
   if (chkMulti?.checked) {
     let n = parseInt(multiCount.value) || 1;
@@ -419,7 +431,6 @@ function finishDraw(names) {
     pool.splice(idx, 1);
   }
 
-  // 歷史（最新在上）
   picked.forEach((name) => {
     winners.unshift(name);
     const li = document.createElement("li");
@@ -435,7 +446,6 @@ function finishDraw(names) {
 
   winnerOverlay.classList.add("show");
 
-  // 中獎音（被阻擋時再嘗試）
   if (sfxWin) {
     sfxWin.volume = 1;
     sfxWin.muted = false;
@@ -449,32 +459,6 @@ function closeOverlayToSetup() {
   winnerOverlay.classList.remove("show");
   switchView("setup");
 }
-
-// 得獎畫面：按空白鍵立即再抽（略過預覽）
-document.addEventListener('keydown', (e) => {
-  if (!(e.code === 'Space' || e.key === ' ')) return;
-  if (!winnerOverlay?.classList.contains('show')) return;
-
-  e.preventDefault();
-  e.stopImmediatePropagation();
-
-  // 停止中獎音
-  safeStop(sfxWin);
-
-  // 重算可抽名單（尊重「排除已中獎」）
-  let names = getAvailableNames();
-  if (!names.length) {
-    // 沒名單可抽：回設定頁
-    winnerOverlay.classList.remove('show');
-    switchView('setup');
-    return;
-  }
-
-  // 關閉 overlay，直接進下一輪
-  winnerOverlay.classList.remove('show');
-  switchView('draw');
-  startDraw(names);
-}, true);
 
 // ====== 煙花（overlay 背景） ======
 (function () {

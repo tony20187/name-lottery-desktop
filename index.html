@@ -9,84 +9,93 @@
 <body>
   <div class="wrap">
     <header class="header">
-      <h1>🎉 華谷電機-名字抽獎🎉</h1>
-      <div class="version" id="version">|ver.2025-10-04|機工課雷射組-副組長 李書宏|</div>
+      <h1 class="app-title">🎉 華谷電機-名字抽獎🎉</h1>
+      <div class="version" id="version">|ver.2025-10-04|機工課雷射組-副組長 李書宏 (tony20187@gmail.com)|</div>
     </header>
 
     <!-- ===== 設定頁 ===== -->
     <main id="viewSetup" class="view">
       <section class="card">
+        <h3 class="label">分組抽獎</h3>
 
-        <!-- 分組輸入 -->
-        <div class="group">
-          <div class="group__head">
+        <!-- 第一組 -->
+        <div class="group open">
+          <label class="group__head ck">
             <input type="checkbox" id="g1" checked>
-            <label for="g1">第一組</label>
-          </div>
+            第一組（預設勾選）
+          </label>
           <div class="group__body">
-            <textarea id="g1Names" placeholder="例：小明, 小美, Tony"></textarea>
+            <textarea id="g1Names" placeholder="例：小明、小美、Tony"></textarea>
           </div>
         </div>
 
+        <!-- 第二組 -->
         <div class="group">
-          <div class="group__head">
+          <label class="group__head ck">
             <input type="checkbox" id="g2">
-            <label for="g2">第二組</label>
-          </div>
+            第二組
+          </label>
           <div class="group__body">
-            <textarea id="g2Names"></textarea>
+            <textarea id="g2Names" placeholder="第二組名單，逗號或換行分隔"></textarea>
           </div>
         </div>
 
+        <!-- 第三組 -->
         <div class="group">
-          <div class="group__head">
+          <label class="group__head ck">
             <input type="checkbox" id="g3">
-            <label for="g3">第三組</label>
-          </div>
+            第三組
+          </label>
           <div class="group__body">
-            <textarea id="g3Names"></textarea>
+            <textarea id="g3Names" placeholder="第三組名單，逗號或換行分隔"></textarea>
           </div>
         </div>
 
+        <!-- 第四組 -->
         <div class="group">
-          <div class="group__head">
+          <label class="group__head ck">
             <input type="checkbox" id="g4">
-            <label for="g4">第四組</label>
-          </div>
+            第四組
+          </label>
           <div class="group__body">
-            <textarea id="g4Names"></textarea>
+            <textarea id="g4Names" placeholder="第四組名單，逗號或換行分隔"></textarea>
           </div>
         </div>
+
+        <label class="ck">
+          <input type="checkbox" id="excludeWinners" checked>
+          排除已中獎（不重複）
+        </label>
 
         <div class="range">
-          <label class="ck">
-            <input type="checkbox" id="excludeWinners" checked>
-            排除已中獎（不重複）
-          </label>
           <span>抽獎時長（秒）5–10：</span>
           <input type="range" id="duration" min="5" max="10" value="10">
           <b id="durationVal">10s</b>
         </div>
 
+        <!-- 洗球速度（UI 保留、目前不影響邏輯） -->
         <div class="range">
           <span>洗球速度：</span>
           <input type="range" id="speedRange" min="1" max="5" value="2">
           <b id="speedVal">2x</b>
         </div>
 
+        <!-- 空白鍵抽獎 -->
         <label class="ck">
           <input type="checkbox" id="chkSpaceStart" checked>
           按「空白鍵」可進行抽獎
         </label>
 
+        <!-- 預覽名單 -->
         <label class="ck">
           <input type="checkbox" id="chkPreview">
           預覽人員名單
         </label>
 
+        <!-- 一次抽幾個人 -->
         <label class="ck">
           <input type="checkbox" id="chkMulti">
-          一次抽幾個人(最多5人)
+          一次抽幾個人（最多5人）
           <input id="multiCount" type="number" min="1" max="5" value="1" style="width:64px;margin-left:6px" disabled>
         </label>
 
@@ -129,10 +138,15 @@
       </div>
 
       <div id="winnerOverlay" class="overlay">
+        <!-- 煙花 canvas 會自動插入這裡 -->
         <div class="modal" role="dialog" aria-modal="true">
           <div class="subtle">本次中獎者</div>
+          <!-- 不出現卷軸 -->
           <div id="winnerName" class="winner"></div>
+
+          <!-- 右側恭喜圖片 -->
           <img id="winnerImg" class="winner-img" src="images/winner.png" alt="恭喜中獎">
+
           <button id="btnCloseOverlay" class="btn small" style="margin-top:10px">關閉並返回</button>
           <div class="hint">也可按 ESC 或點背景關閉</div>
         </div>
@@ -140,6 +154,7 @@
     </main>
   </div>
 
+  <!-- 🔊 音效 -->
   <audio id="sfxWash" src="sound/洗球.mp3" preload="auto"></audio>
   <audio id="sfxWin"  src="sound/鼓掌歡呼.mp3" preload="auto"></audio>
 

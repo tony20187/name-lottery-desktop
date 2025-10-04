@@ -9,69 +9,16 @@ body{
   font-family:system-ui,-apple-system,Segoe UI,Roboto,Noto Sans TC,Arial,sans-serif
 }
 .wrap{max-width:1180px;margin:auto;padding:20px 18px 40px}
-
-
-/* ===== Header 樣式（保持同一行 + RWD 響應） ===== */
-.header {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: nowrap; /* 保證在同一行不換行 */
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-h1 {
-  margin: 0;
-  font-size: 2.8rem;
-  line-height: 1.2;
-}
-
-.version {
-  font-size: 1rem;
-  opacity: 1;
-  white-space: nowrap;
-  text-align: right;
-}
-
-/* ✅ 手機螢幕時自動縮小（寬度小於 768px） */
-@media (max-width: 768px) {
-  h1 {
-    font-size: 2rem;
-  }
-  .version {
-    font-size: 0.8rem;
-  }
-}
-
-/* ✅ 超小螢幕（寬度小於 480px）再縮小 70% 並允許換行 */
-@media (max-width: 480px) {
-  .header {
-    flex-direction: column;
-    align-items: flex-start;
-    white-space: normal;
-  }
-  h1 {
-    font-size: 1.8rem;
-  }
-  .version {
-    font-size: 0.75rem;
-    text-align: left;
-  }
-}
-
-
-
-
+.header{display:flex;align-items:flex-end;gap:12px;justify-content:space-between;flex-wrap:nowrap}
+.app-title{margin:0;font-size:45px;white-space:nowrap}
+.version{opacity:1;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 .view.hidden{display:none}
 .card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:14px;box-shadow:var(--shadow)}
 .label{font-size:20px;opacity:1}
 textarea{
   width:100%;height:140px;margin-top:6px;border:1px solid var(--border);
-  border-radius:12px;padding:10px;resize:vertical;
-  overflow:hidden; /* ✅ 新增：隱藏捲軸（內容多自動撐高由 JS 負責） */
+  border-radius:12px;padding:10px;resize:vertical;overflow:hidden;
 }
 .ck{display:flex;align-items:center;gap:8px;font-size:14px;margin:6px 0}
 .range{display:flex;align-items:center;gap:8px;margin-top:8px}
@@ -84,77 +31,26 @@ textarea{
 .list{margin:0;padding-left:20px;min-height:24px}
 .error{margin-top:10px;color:#b91c1c;background:#fee2e2;border:1px solid #fecaca;padding:8px;border-radius:10px}
 
-/* ===== 分組 UI（保留，沒有使用也不影響） ===== */
+/* 分組 UI */
 .group{border:1px dashed var(--border);border-radius:12px;padding:10px;margin:10px 0;background:#fff}
 .group__head{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
 .group__body{display:none;margin-top:8px}
 .group.open .group__body{display:block}
 
-/* 統一分組輸入框高度 */
-.group textarea {
-  min-height: 60px;  /* ✅ 跟第一組一樣大 */
-  resize: vertical;   /* 保留可以拉伸的功能 */
-  overflow: hidden;   /* 捲軸隱藏，自動撐高 */
-}
-
-
 /* === 舞台 === */
-
-.stage {
-  position: relative;
-  height: 520px;
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  background: #fff;
-  overflow: hidden;
-  box-shadow: inset 0 2px 20px rgba(0,0,0,.04);
+.stage{
+  position:relative;border:1px solid var(--border);border-radius:18px;background:#fff;
+  overflow:hidden;box-shadow:inset 0 2px 20px rgba(0,0,0,.04);
+  height:60vh; min-height:420px; /* RWD：視窗高的 60% */
 }
-
-.stage.running {
-  box-shadow: inset 0 2px 20px rgba(0,0,0,.08), 0 0 0 4px rgba(245,158,11,.15);
-}
-
-.fx-canvas {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-/* ===== ✅ 舞台 RWD 自動縮放 ===== */
-@media (max-width: 1200px) {
-  .stage {
-    transform: scale(0.95);
-    transform-origin: center top;
-  }
-}
-
-@media (max-width: 992px) {
-  .stage {
-    transform: scale(0.9);
-    transform-origin: center top;
-  }
-}
-
-@media (max-width: 768px) {
-  .stage {
-    transform: scale(0.8);
-    transform-origin: center top;
-  }
-}
-
-@media (max-width: 576px) {
-  .stage {
-    transform: scale(0.7);
-    transform-origin: center top;
-  }
-}
-
+.stage.running{box-shadow:inset 0 2px 20px rgba(0,0,0,.08), 0 0 0 4px rgba(245,158,11,.15);}
+.fx-canvas{position:absolute;inset:0;pointer-events:none}
 
 /* 進度條 */
 .progress{height:6px;background:#f3f4f6;border-radius:999px;overflow:hidden;margin:10px 0}
 .progress__bar{height:100%;width:0%;background:linear-gradient(90deg,#fde68a,#f59e0b);transition:width .2s linear}
 
-/* 預覽名單字體放大 */
+/* 預覽名單 */
 #previewList{margin-top:6px}
 #previewList span { font-size: 1.2rem; line-height: 1.8; }
 
@@ -172,49 +68,35 @@ textarea{
   text-align:center;border:1px solid var(--border);max-width:80vw; overflow:visible;
 }
 .subtle{ font-size:45px; opacity:.6; margin-bottom:6px; color:#ef4444; }
-.winner{ font-size:200px; font-weight:800; letter-spacing:.02em; line-height:1.1 }
+.winner{ font-size:200px; font-weight:800; letter-spacing:.02em; line-height:1.1; max-height:none; overflow:visible; }
 .hint{ font-size:12px; opacity:.6; margin-top:8px }
 
 /* 煙花在底、modal 在上 */
 .overlay .modal { z-index: 5; }
 #fireworksCanvas { z-index: 0 !important; }
 
-/* 中獎名單（多人時自動撐高，無卷軸） */
-#winnerName{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:.22em;
-  max-height:none;   /* 不限制高度 */
-  overflow:visible;  /* 顯示所有文字，不產生捲軸 */
-}
+/* 不要卷軸 */
+#winnerName{ display:flex; flex-direction:column; align-items:center; gap:.22em; max-height:none; overflow:visible; }
 
-
-/* 右側固定圖片（紅圈位置） */
+/* 右側固定圖片 */
 .winner-img{
   position:absolute;
-  right:-24vw;   /* 推到 modal 右側空白處 */
+  right:-40vw;
   top:50%;
   transform:translateY(-50%);
-  width:min(25vw, 800px);
+  width:min(40vw, 900px);
   height:auto;
   pointer-events:none; user-select:none;
   filter: drop-shadow(0 10px 20px rgba(0,0,0,.15));
 }
 
-/* 小螢幕自動靠下 */
+/* 小螢幕自動靠下 & 標題縮小到 70% */
 @media (max-width: 900px){
-  .winner-img{
-    right: 0;
-    top: 100%;
-    transform: translateY(20px);
-    width: 160px;
-  }
+  .winner-img{ right:0; top:100%; transform:translateY(20px); width:160px; }
+  .app-title{ font-size: 31.5px; }     /* 45px * 0.7 */
+  .version{ font-size: 10.5px; }       /* 15px * 0.7 */
 }
 
-
-
-/* 舞台放大版 */
+/* 舞台放大版（可用 class 控制） */
 .stage-xl{ height: 65vh; min-height: 600px; max-height: 900px; }
-/* 超大舞台版 */
 .stage-xxl{ height: 80vh; min-height: 700px; max-height: 1000px; }
