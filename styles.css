@@ -9,9 +9,50 @@ body{
   font-family:system-ui,-apple-system,Segoe UI,Roboto,Noto Sans TC,Arial,sans-serif
 }
 .wrap{max-width:1180px;margin:auto;padding:20px 18px 40px}
-.header{display:flex;align-items:end;gap:12px;justify-content:space-between}
-h1{margin:0;font-size:45px}
-.version{opacity:1;font-size:15px}
+
+
+/* ===== Header 置中與 RWD 一行不換 ===== */
+.header {
+  display: flex;
+  align-items: center;           /* 垂直置中 */
+  justify-content: space-between;/* 左右對齊 */
+  flex-wrap: nowrap;             /* ❌ 禁止換行 */
+  gap: 12px;
+  white-space: nowrap;           /* ❌ 禁止斷行 */
+  overflow: hidden;              /* 超出隱藏 */
+  text-overflow: ellipsis;       /* 長度過長時加 ... */
+}
+
+h1 {
+  margin: 0;
+  font-size: 2.8rem;             /* 預設電腦字體大小 */
+  flex-shrink: 0;                /* 不壓縮標題 */
+}
+
+.version {
+  opacity: 1;
+  font-size: 1rem;
+  flex-shrink: 1;                /* 可壓縮以保持同一行 */
+  text-align: right;
+}
+
+/* ===== RWD 響應式縮放 ===== */
+@media (max-width: 900px) {
+  h1 { font-size: 2rem; }        /* 平板略縮小 */
+  .version { font-size: 0.9rem; }
+}
+
+@media (max-width: 600px) {
+  h1 { font-size: 1.8rem; }      /* 手機縮小約70% */
+  .version { font-size: 0.8rem; }
+}
+
+@media (max-width: 400px) {
+  h1 { font-size: 1.5rem; }      /* 超小螢幕再縮 */
+  .version { font-size: 0.75rem; }
+}
+
+
 
 .view.hidden{display:none}
 .card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:14px;box-shadow:var(--shadow)}
