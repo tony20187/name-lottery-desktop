@@ -98,57 +98,54 @@ textarea{
 }
 
 
-/* === 舞台自適應設定 === */
+/* === 舞台 === */
+
 .stage {
   position: relative;
-  width: 100%;
-  max-width: 100%;
-  aspect-ratio: 16 / 9; /* 維持視覺比例 */
+  height: 520px;
   border: 1px solid var(--border);
   border-radius: 18px;
   background: #fff;
   overflow: hidden;
-  box-shadow: inset 0 2px 20px rgba(0, 0, 0, .04);
-  transition: all 0.3s ease;
+  box-shadow: inset 0 2px 20px rgba(0,0,0,.04);
 }
 
-/* 當抽獎進行中，舞台外框閃光效果 */
 .stage.running {
-  box-shadow:
-    inset 0 2px 20px rgba(0, 0, 0, .08),
-    0 0 0 4px rgba(245, 158, 11, .15);
+  box-shadow: inset 0 2px 20px rgba(0,0,0,.08), 0 0 0 4px rgba(245,158,11,.15);
 }
 
-/* 調整舞台在不同螢幕下的大小 */
+.fx-canvas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* ===== ✅ 舞台 RWD 自動縮放 ===== */
 @media (max-width: 1200px) {
-  .stage { aspect-ratio: 4 / 3; }
-}
-@media (max-width: 900px) {
-  .stage { aspect-ratio: 1 / 1; border-radius: 14px; }
-}
-@media (max-width: 600px) {
   .stage {
-    aspect-ratio: 3 / 4;
-    border-radius: 12px;
-    font-size: 0.8rem;
+    transform: scale(0.95);
+    transform-origin: center top;
   }
 }
 
-/* 內部文字與球自動縮放 */
-.stage span {
-  transform-origin: center center;
-  transition: transform 0.2s ease;
+@media (max-width: 992px) {
+  .stage {
+    transform: scale(0.9);
+    transform-origin: center top;
+  }
 }
 
 @media (max-width: 768px) {
-  .stage span {
-    transform: scale(0.85); /* 平板縮小 85% */
+  .stage {
+    transform: scale(0.8);
+    transform-origin: center top;
   }
 }
 
-@media (max-width: 480px) {
-  .stage span {
-    transform: scale(0.7); /* 手機縮小 70% */
+@media (max-width: 576px) {
+  .stage {
+    transform: scale(0.7);
+    transform-origin: center top;
   }
 }
 
