@@ -10,7 +10,7 @@
   <div class="wrap">
     <header class="header">
       <h1 class="app-title">🎉 華谷電機-名字抽獎🎉</h1>
-      <div class="version" id="version">|ver.2025-10-05-3|機工課雷射組-副組長 李書宏 |</div>
+      <div class="version" id="version">|ver.2025-10-11-1|機工課雷射組-副組長 李書宏 |</div>
     </header>
 
     <!-- ===== 設定頁 ===== -->
@@ -139,13 +139,25 @@
 
       <div id="winnerOverlay" class="overlay">
         <!-- 煙花 canvas 會自動插入這裡 -->
-        <div class="modal" role="dialog" aria-modal="true">
+
+        <!--
+          ✅ 中獎彈窗可獨立調整尺寸/位移
+          - modal--w-45：最大寬度 45vw（你可以改 40/45/50/60/70/80）
+          - modal--shift-18：向左位移 18vw（可改 10/12/15/18/20）
+          - modal--scale-110：整體放大 1.10 倍（可改 105/110/115/120）
+          以上工具類都已在 styles.css 底部提供，不影響原樣式。
+        -->
+        <div class="modal modal--w-45 modal--shift-18 modal--scale-110" role="dialog" aria-modal="true">
           <div class="subtle">本次中獎者</div>
           <!-- 不出現卷軸 -->
           <div id="winnerName" class="winner"></div>
 
-          <!-- 右側恭喜圖片 -->
-          <img id="winnerImg" class="winner-img" src="images/winner.png" alt="恭喜中獎">
+          <!--
+            ✅ 財神爺可獨立調整位置與大小：
+            - winner-img--left-50：再往左（40/45/50/55）
+            - winner-img--w-45：放大圖片寬（36/40/45/50）
+          -->
+          <img id="winnerImg" class="winner-img winner-img--left-50 winner-img--w-45" src="images/winner.png" alt="恭喜中獎">
 
           <button id="btnCloseOverlay" class="btn small" style="margin-top:10px">關閉並返回</button>
           <div class="hint">也可按 ESC 或點背景關閉</div>
