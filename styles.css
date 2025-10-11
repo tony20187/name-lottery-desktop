@@ -62,7 +62,7 @@ body {
 
 textarea {
   width: 100%;
-  height: 140px;
+  height: 80px;
   margin-top: 6px;
   border: 1px solid var(--border);
   border-radius: 12px;
@@ -372,5 +372,10 @@ textarea {
     max-width: 95vw !important;         /* 保證不超出畫面 */
     height: auto !important;
     object-fit: contain;
+  }
+}
+@media (max-width: 900px){
+  .group__body textarea{
+    height: 80px !important;
   }
 }
