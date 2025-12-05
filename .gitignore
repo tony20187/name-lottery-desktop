@@ -1,0 +1,11 @@
+﻿node_modules/
+release/
+dist/
+out/
+build/
+*.exe
+*.zip
+*.7z
+.DS_Store
+Thumbs.db
+.vscode/

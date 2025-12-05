@@ -1,0 +1,75 @@
+{
+  "name": "name-lottery-desktop",
+  "version": "1.0.0",
+  "description": "桌面版名字抽獎",
+  "main": "main.js",
+  "author":  "機工課雷射組-副組長 李書宏 <tony20187@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "cross-env CSC_IDENTITY_AUTO_DISCOVERY=false WIN_CSC_LINK= electron-builder"
+  },
+ 
+  "build": {
+    "appId": "tw.hwaguo.name.lottery",
+    "productName": "華谷電機-名字抽獎",
+    "copyright": "Copyright © 2025 Tony",
+    "files": [
+      "main.js",
+      "preload.js",
+      "index.html",
+      "renderer.js",
+      "styles.css",
+      "package.json",
+      "sound/**",
+      "build/icon.png",
+      "images/**"
+    ],
+    "asar": true,
+    "directories": {
+      "buildResources": "build",
+      "output": "release"
+    },
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.utilities",
+      "icon": "build/icon.png"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.ico",
+      "artifactName": "華谷電機-名字抽獎-Setup.exe"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "華谷電機-名字抽獎"
+    }
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.11",
+    "@vitejs/plugin-react": "^4.6.0",
+    "autoprefixer": "^10.4.21",
+    "electron": "^27.0.0",
+    "electron-builder": "^24.13.3",
+    "gh-pages": "^6.3.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.11",
+    "vite": "^4.5.14"
+  },
+  "dependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-router-dom": "^7.6.3"
+  }
+}
+
+
